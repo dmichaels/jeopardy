@@ -25,7 +25,7 @@ def display(data: list[dict]):
     question = normalize(record.get("answer", ""))
 
     print()
-    print(f"Category: {category} > {amount}")
+    print(f"Category: {category} >> {amount}")
     print(f"Answer:   {answer}")
 
     input("Question: ")
