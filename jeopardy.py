@@ -3,6 +3,9 @@ import random
 import re
 import sys
 
+# Downloaded this file from (200k_questions.json):
+# https://www.kaggle.com/datasets/aravindram11/jeopardy-dataset-updated
+#
 jeopardy_file = "jeopardy_questions_19840910_20120127.json"
 
 def main():
@@ -16,13 +19,13 @@ def main():
 def display(data: list[dict]):
 
     record   = random.choice(data)
-    category = record.get('category', '')
-    amount   = record.get('value', '')
-    answer   = normalize(record.get('question', ''))
-    question = normalize(record.get('answer', ''))
+    category = record.get("category", "")
+    amount   = record.get("value", "")
+    answer   = normalize(record.get("question", ""))
+    question = normalize(record.get("answer", ""))
 
     print()
-    print(f"Category: {category} | {amount}")
+    print(f"Category: {category} > {amount}")
     print(f"Answer:   {answer}")
 
     input("Question: ")
@@ -30,7 +33,7 @@ def display(data: list[dict]):
 
 def normalize(s: str) -> str:
     s = s.strip()
-    return re.sub(r'\s+', ' ', s.replace("<br />", " ").strip().strip("\"").strip("'").replace("\\'", "'").strip())
+    return re.sub(r"\s+", " ", s.replace("<br />", " ").strip().strip("\"").strip("'").replace("\\'", "'").strip())
 
 if __name__ == "__main__":
     main()
