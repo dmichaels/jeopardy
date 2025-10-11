@@ -33,8 +33,8 @@ def display(data: list[dict]):
     print(f"Category: {category} > {amount}")
     print(f"Answer:   {answer}")
 
-    input("Question: ")
-    print(f"\033[F\033[KQuestion: {question}")
+    input("What Is:  ")
+    print(f"\033[F\033[KWhat Is:  {question}")
 
 def normalize(s: str) -> str:
     s = s.strip()
