@@ -11,7 +11,7 @@ def main():
         data = json.load(f)
 
     guess_year = True
-    guess_number = True
+    guess_number = False
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "--year":
@@ -19,10 +19,18 @@ def main():
         elif sys.argv[1] == "--number":
             guess_number = True
 
-    while True:
-        display(data, guess_year, guess_number)
+    recent_items = []
+    recent_items_max = 10
 
-def display(data: list[dict], guess_year: bool, guess_number: bool):
+    while True:
+        item = display(data, guess_year, guess_number)
+        if item in recent_items:
+            continue
+        recent_items.append(item)
+        if len(recent_items) >= recent_items_max:
+            del recent_items[0]
+
+def display(data: list[dict], guess_year: bool, guess_number: bool) -> int:
 
     record = random.choice(data)
     number = record.get("number")
@@ -47,6 +55,8 @@ def display(data: list[dict], guess_year: bool, guess_number: bool):
             print(f"\033[F\033[KNumber:    ✅ RIGHT ⮕  {number}")
         else:
             print(f"\033[F\033[KNumber:    ❌ WRONG ⮕> {number}")
+
+    return number
 
 def toint(value: str, fallback: int = 0) -> int:
     try:
