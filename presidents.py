@@ -9,8 +9,40 @@ data_file = os.path.join(script_dir, "presidents.json")
 
 def main():
 
-    with open(data_file, "r") as f:
-        data = json.load(f)
+    recent_items_max = 12
+    recent_items     = []
+    data             = {}
+
+    def load():
+        with open(data_file, "r") as f:
+            return json.load(f)
+
+    def select() -> tuple[dict, int]:
+
+        nonlocal recent_items_max, recent_items, data
+
+        def multiterm(item: dict) -> int:
+            nonlocal data
+            starts = []
+            for record in data:
+                if record.get("name") == item.get("name"):
+                    starts.append(record.get("start"))
+            if len(starts) > 1:
+                return starts.index(item.get("start")) + 1
+            return 0
+
+        while True:
+            item = random.choice(data)
+            number = toint(item.get("number"))
+            if number in recent_items:
+                continue
+            recent_items.append(number)
+            if len(recent_items) > recent_items_max:
+                del recent_items[0]
+            return item, multiterm(item)
+
+
+    data = load()
 
     guess_year   = False
     guess_number = False
@@ -30,34 +62,25 @@ def main():
     if guess_name:
         guess_number = False
 
-    recent_items_max = 12
-    recent_items     = []
-
     while True:
-        if (item := display(data, guess_year, guess_number, guess_name)) in recent_items:
-            continue
-        recent_items.append(item)
-        if len(recent_items) >= recent_items_max:
-            del recent_items[0]
+        item, term = select()
+        display(item, term, guess_year, guess_number, guess_name)
 
-def display(data: list[dict], guess_year: bool, guess_number: bool, guess_name: bool = False) -> int:
+def display(item: dict, term: int, guess_year: bool, guess_number: bool, guess_name: bool = False) -> None:
 
-    record = random.choice(data)
-    number = record.get("number")
-    name   = record.get("name", "")
-    start  = record.get("start", "")
-    term   = find_presidential_multiterm(data, name, start)
+    number = toint(item.get("number"))
+    name   = item.get("name", "")
+    start  = item.get("start", "")
 
     print()
 
     if guess_name:
         print(f"Number:    {number}")
-        if (answer := normalize(input("President.... ? "))) in name.lower():
+        if (answer := normalize(input("President: "))) in name.lower():
             print(f"\033[F\033[KPresident: ✅ RIGHT ⮕  {name}")
         else:
             print(f"\033[F\033[KPresident: ❌ WRONG ⮕> {name}")
-
-    if term > 0:
+    elif term > 0:
         print(f"President: {name} (Term: {term})")
     else:
         print(f"President: {name}")
@@ -74,22 +97,11 @@ def display(data: list[dict], guess_year: bool, guess_number: bool, guess_name: 
         else:
             print(f"\033[F\033[KNumber:    ❌ WRONG ⮕> {number}")
 
-    return number
-
 def toint(value: str, fallback: int = 0) -> int:
     try:
         return int(value)
     except ValueError:
         return fallback
-
-def find_presidential_multiterm(data: list[dict], name: str, start: str) -> int:
-    starts = []
-    for record in data:
-        if record.get("name") == name:
-            starts.append(record.get("start"))
-    if len(starts) > 1:
-        return starts.index(start) + 1
-    return 0
 
 def normalize(s: str) -> str:
     s = s.strip()
