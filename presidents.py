@@ -88,7 +88,7 @@ def display(item: dict, guess_year: bool, guess_number: bool, guess_name: bool =
         else:
             print(f"\033[F\033[KPresident: ❌ WRONG ⮕> {name}")
     elif nct > 0:
-        print(f"President: {name} (Term: {nct})")
+        print(f"President: {name} [Term: {nct}]")
     else:
         print(f"President: {name}")
 
