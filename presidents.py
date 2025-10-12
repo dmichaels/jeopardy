@@ -25,8 +25,10 @@ def main():
         elif arg in ["--name", "-name"]:
             guess_name = True
 
-    if not guess_number:
+    if not (guess_number or guess_name):
         guess_year = True
+    if guess_name:
+        guess_number = False
 
     recent_items_max = 12
     recent_items     = []
@@ -50,12 +52,10 @@ def display(data: list[dict], guess_year: bool, guess_number: bool, guess_name: 
 
     if guess_name:
         print(f"Number:    {number}")
-        answer = normalize(input("President.... ? "))
-        if answer in name.lower():
+        if (answer := normalize(input("President.... ? "))) in name.lower():
             print(f"\033[F\033[KPresident: ✅ RIGHT ⮕  {name}")
         else:
             print(f"\033[F\033[KPresident: ❌ WRONG ⮕> {name}")
-        return number
 
     if term > 0:
         print(f"President: {name} (Term: {term})")
