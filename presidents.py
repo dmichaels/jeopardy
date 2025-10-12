@@ -1,38 +1,44 @@
 import json
 import random
 import re
+import os
 import sys
 
-presidents_file = "presidents.json"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_file = os.path.join(script_dir, "presidents.json")
 
 def main():
 
-    with open(presidents_file, "r") as f:
+    with open(data_file, "r") as f:
         data = json.load(f)
 
-    guess_year = False
+    guess_year   = False
     guess_number = False
+    guess_name   = False
 
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "--year":
+    for arg in sys.argv[1:]:
+        arg = arg.lower()
+        if arg in ["--year", "-year"]:
             guess_year = True
-        elif sys.argv[1] == "--number":
+        elif arg in ["--number", "-number"]:
             guess_number = True
+        elif arg in ["--name", "-name"]:
+            guess_name = True
+
     if not guess_number:
         guess_year = True
 
-    recent_items = []
     recent_items_max = 12
+    recent_items     = []
 
     while True:
-        item = display(data, guess_year, guess_number)
-        if item in recent_items:
+        if (item := display(data, guess_year, guess_number, guess_name)) in recent_items:
             continue
         recent_items.append(item)
         if len(recent_items) >= recent_items_max:
             del recent_items[0]
 
-def display(data: list[dict], guess_year: bool, guess_number: bool) -> int:
+def display(data: list[dict], guess_year: bool, guess_number: bool, guess_name: bool = False) -> int:
 
     record = random.choice(data)
     number = record.get("number")
@@ -41,6 +47,16 @@ def display(data: list[dict], guess_year: bool, guess_number: bool) -> int:
     term   = find_presidential_multiterm(data, name, start)
 
     print()
+
+    if guess_name:
+        print(f"Number:    {number}")
+        answer = normalize(input("President.... ? "))
+        if answer in name.lower():
+            print(f"\033[F\033[KPresident: ✅ RIGHT ⮕  {name}")
+        else:
+            print(f"\033[F\033[KPresident: ❌ WRONG ⮕> {name}")
+        return number
+
     if term > 0:
         print(f"President: {name} (Term: {term})")
     else:
