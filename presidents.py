@@ -10,7 +10,7 @@ def main():
     with open(presidents_file, "r") as f:
         data = json.load(f)
 
-    guess_year = True
+    guess_year = False
     guess_number = False
 
     if len(sys.argv) > 1:
@@ -18,9 +18,11 @@ def main():
             guess_year = True
         elif sys.argv[1] == "--number":
             guess_number = True
+    if not guess_number:
+        guess_year = True
 
     recent_items = []
-    recent_items_max = 10
+    recent_items_max = 12
 
     while True:
         item = display(data, guess_year, guess_number)
