@@ -9,7 +9,7 @@ data_file = os.path.join(script_dir, "presidents.json")
 
 def main():
 
-    recent_items_max = 12
+    recent_items_max = 7
     recent_items     = []
     data             = {}
 
@@ -19,12 +19,12 @@ def main():
 
         def non_consecutive_term(item: dict) -> int:
             nonlocal data
-            numbers = []
+            ranks = []
             for record in data:
                 if record.get("name") == item.get("name"):
-                    numbers.append(record.get("rank"))
-            if len(numbers) > 1:
-                return numbers.index(item.get("rank")) + 1
+                    ranks.append(record.get("rank"))
+            if len(ranks) > 1:
+                return ranks.index(item.get("rank")) + 1
             return 0
 
         with open(data_file, "r") as f:
@@ -44,7 +44,7 @@ def main():
 
         while True:
             item = random.choice(data)
-            rank = toint(item.get("rank"))
+            rank = item.get("rank")
             if rank in recent_items:
                 continue
             recent_items.append(rank)
@@ -55,28 +55,28 @@ def main():
 
     data = load()
 
-    guess_year   = False
-    guess_number = False
-    guess_name   = False
+    guess_year = False
+    guess_rank = False
+    guess_name = False
 
     for arg in sys.argv[1:]:
         arg = arg.lower()
         if arg in ["--year", "-year"]:
             guess_year = True
         elif arg in ["--rank", "-rank", "--number", "-number"]:
-            guess_number = True
+            guess_rank = True
         elif arg in ["--name", "-name"]:
             guess_name = True
 
-    if not (guess_number or guess_name):
+    if not (guess_rank or guess_name):
         guess_year = True
     if guess_name:
-        guess_number = False
+        guess_rank = False
 
     while True:
-        display(select(), guess_year, guess_number, guess_name)
+        display(select(), guess_year, guess_rank, guess_name)
 
-def display(item: dict, guess_year: bool, guess_number: bool, guess_name: bool = False) -> None:
+def display(item: dict, guess_year: bool, guess_rank: bool, guess_name: bool = False) -> None:
 
     rank = item.get("rank")
     name = item.get("name", "")
@@ -98,11 +98,11 @@ def display(item: dict, guess_year: bool, guess_number: bool, guess_name: bool =
 
     if guess_year:
         if (answer := input("Year:      ")) == year:
-            print(f"\033[F\033[KYear:      ✅ RIGHT ⮕  {year}{f' [{rank}]' if not guess_number else ''}")
+            print(f"\033[F\033[KYear:      ✅ RIGHT ⮕  {year}{f' [{rank}]' if not guess_rank else ''}")
         else:
-            print(f"\033[F\033[KYear:      ❌ WRONG ⮕> {year}{f' [{rank}]' if not guess_number else ''}")
+            print(f"\033[F\033[KYear:      ❌ WRONG ⮕> {year}{f' [{rank}]' if not guess_rank else ''}")
 
-    if guess_number:
+    if guess_rank:
         if (answer := toint(input("Number:    "))) == rank:
             print(f"\033[F\033[KNumber:    ✅ RIGHT ⮕  {rank}{f' [{year}]' if not guess_year else ''}")
         else:
