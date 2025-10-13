@@ -1,3 +1,4 @@
+import datetime
 import json
 import random
 import re
@@ -29,23 +30,26 @@ def main():
 
         with open(data_file, "r") as f:
             data = json.load(f)
-            rank = 1
-            for item in data:
+            data.sort(key=lambda value: todate(value["from"]))
+            for rank, item in enumerate(data, start=1):
                 item["rank"] = rank
-                rank += 1
             for item in data:
                 if (nct := non_consecutive_term(item)) > 0:
                     item["nct"] = nct  # non-consecutive term number
+            print(json.dumps(data, indent=2))
             return data
 
     def select() -> dict:
 
         nonlocal recent_items_max, recent_items, data
 
+        ntries_max = 100
+        ntries = 1
         while True:
             item = random.choice(data)
             rank = item.get("rank")
-            if rank in recent_items:
+            if (rank in recent_items) and (ntries < ntries_max):
+                ntries += 1
                 continue
             recent_items.append(rank)
             if len(recent_items) > recent_items_max:
@@ -80,7 +84,7 @@ def display(item: dict, guess_year: bool, guess_rank: bool, guess_name: bool = F
 
     rank = item.get("rank")
     name = item.get("name", "")
-    year = item.get("year", "")
+    year = todate(item.get("from")).year
     nct  = item.get("nct") or 0
 
     print()
@@ -97,7 +101,7 @@ def display(item: dict, guess_year: bool, guess_rank: bool, guess_name: bool = F
         print(f"President: {name}")
 
     if guess_year:
-        if (answer := input("Year:      ")) == year:
+        if (answer := toint(input("Year:      "))) == year:
             print(f"\033[F\033[KYear:      ✅ RIGHT ⮕  {year}{f' [{rank}]' if not guess_rank else ''}")
         else:
             print(f"\033[F\033[KYear:      ❌ WRONG ⮕> {year}{f' [{rank}]' if not guess_rank else ''}")
@@ -112,6 +116,12 @@ def toint(value: str, fallback: int = 0) -> int:
     try:
         return int(value)
     except ValueError:
+        return fallback
+
+def todate(value: str, fallback: datetime.date = datetime.date.min) -> datetime.date:
+    try:
+        return datetime.datetime.strptime(value, "%Y-%m-%d").date()
+    except Exception as e:
         return fallback
 
 def normalize(s: str) -> str:
