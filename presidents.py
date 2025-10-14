@@ -36,7 +36,7 @@ def main():
             for item in data:
                 if (nct := non_consecutive_term(item)) > 0:
                     item["nct"] = nct  # non-consecutive term number
-            print(json.dumps(data, indent=2))
+            # print(json.dumps(data, indent=2))
             return data
 
     def select() -> dict:
