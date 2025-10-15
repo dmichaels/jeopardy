@@ -10,7 +10,7 @@ data_file = os.path.join(script_dir, "presidents.json")
 
 def main():
 
-    recent_items_max = 7
+    recent_items_max = 14
     recent_items     = []
     data             = {}
 
@@ -59,9 +59,11 @@ def main():
 
     data = load()
 
-    guess_year = False
-    guess_rank = False
-    guess_name = False
+    guess_year          = False
+    guess_rank          = False
+    guess_state         = False
+    guess_name_by_year  = False
+    guess_name_by_rank  = False
 
     for arg in sys.argv[1:]:
         arg = arg.lower()
@@ -69,42 +71,72 @@ def main():
             guess_year = True
         elif arg in ["--rank", "-rank", "--number", "-number"]:
             guess_rank = True
-        elif arg in ["--name", "-name"]:
-            guess_name = True
+        elif arg in ["--state", "-state"]:
+            guess_state = True
+        elif arg in ["--name-by-year", "-name-by-year", "--name", "-name"]:
+            guess_name_by_year = True
+        elif arg in ["--name-by-rank", "-name-by-rank", "--name-by-number", "--name-by-number"]:
+            guess_name_by_rank = True
 
-    if not (guess_rank or guess_name):
+    if not (guess_rank or guess_state or guess_name_by_year or guess_name_by_rank):
         guess_year = True
-    if guess_name:
-        guess_rank = False
+
+    if guess_name_by_year:
+        guess_year         = False
+        guess_rank         = False
+        guess_state        = False
+        guess_name_by_rank = False
+
+    if guess_name_by_rank:
+        guess_year         = False
+        guess_rank         = False
+        guess_state        = False
+        guess_name_by_year = False
 
     while True:
-        display(select(), guess_year, guess_rank, guess_name)
+        display(select(), guess_year, guess_rank, guess_state, guess_name_by_year, guess_name_by_rank)
 
-def display(item: dict, guess_year: bool, guess_rank: bool, guess_name: bool = False) -> None:
+def display(item: dict, guess_year: bool, guess_rank: bool, guess_state: bool,
+            guess_name_by_year: bool, guess_name_by_rank: bool) -> None:
 
-    rank = item.get("rank")
-    name = item.get("name", "")
-    year = todate(item.get("from")).year
-    nct  = item.get("nct") or 0
+    guess_simple = guess_year and not (guess_rank or guess_state or guess_name_by_year or guess_name_by_rank)
+
+    name  = item.get("name", "")
+    rank  = item.get("rank")
+    year  = todate(item.get("from")).year
+    party = item.get("party", "")
+    home  = item.get("home", "")
+    state = home.split(",")[1].strip()
+    nct   = item.get("nct") or 0
 
     print()
 
-    if guess_name:
+    if guess_name_by_year:
+        print(f"Year:      {year}")
+        if (answer := normalize(input("President: "))) in name.lower():
+            print(f"\033[F\033[KPresident: ✅ RIGHT ⮕  {name}")
+        else:
+            print(f"\033[F\033[KPresident: ❌ WRONG ⮕> {name}")
+        return
+
+    if guess_name_by_rank:
         print(f"Number:    {rank}")
         if (answer := normalize(input("President: "))) in name.lower():
             print(f"\033[F\033[KPresident: ✅ RIGHT ⮕  {name}")
         else:
             print(f"\033[F\033[KPresident: ❌ WRONG ⮕> {name}")
-    elif nct > 0:
+        return
+
+    if nct > 0:
         print(f"President: {name} [Term: {nct}]")
     else:
         print(f"President: {name}")
 
     if guess_year:
         if (answer := toint(input("Year:      "))) == year:
-            print(f"\033[F\033[KYear:      ✅ RIGHT ⮕  {year}{f' [{rank}]' if not guess_rank else ''}")
+            print(f"\033[F\033[KYear:      ✅ RIGHT ⮕  {year}{f' | #{rank} | {party} | {home}' if guess_simple else ''}")
         else:
-            print(f"\033[F\033[KYear:      ❌ WRONG ⮕> {year}{f' [{rank}]' if not guess_rank else ''}")
+            print(f"\033[F\033[KYear:      ❌ WRONG ⮕> {year}{f' | #{rank} | {party} | {home}' if guess_simple else ''}")
 
     if guess_rank:
         if (answer := toint(input("Number:    "))) == rank:
