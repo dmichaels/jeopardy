@@ -1,0 +1,104 @@
+# JSON data from:
+# https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/refs/heads/master/PeriodicTableJSON.json
+
+import datetime
+import json
+import random
+import re
+import os
+import sys
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_file = os.path.join(script_dir, "periodic_table.json")
+
+def main():
+
+    recent_items_max = 14
+    recent_items     = []
+    data             = {}
+
+    def load():
+
+        nonlocal data
+
+        with open(data_file, "r") as f:
+            data = json.load(f).get("elements")
+            data.sort(key=lambda value: toint(value["number"]))
+            return data
+
+    def select() -> dict:
+
+        nonlocal recent_items_max, recent_items, data
+
+        ntries_max = 100
+        ntries = 1
+        while True:
+            item = random.choice(data)
+            number = item.get("number")
+            if (number in recent_items) and (ntries < ntries_max):
+                ntries += 1
+                continue
+            recent_items.append(number)
+            if len(recent_items) > recent_items_max:
+                del recent_items[0]
+            return item
+
+
+    data = load()
+
+    guess_number = True
+    guess_name   = False
+
+    for arg in sys.argv[1:]:
+        arg = arg.lower()
+        if arg in ["--number", "-number"]:
+            guess_number = True
+            guess_name = False
+        elif arg in ["--name", "-name"]:
+            guess_name = True
+            guess_number = False
+        elif arg in ["--dump", "-dump"]:
+            for element in data:
+                name = element.get("name")
+                number = element.get("number")
+                print(f"{name}: {number}")
+
+    while True:
+        display(select(), guess_number, guess_name)
+
+def display(item: dict, guess_number: bool, guess_name: bool) -> None:
+
+    name     = item.get("name")
+    number   = item.get("number")
+    category = item.get("category")
+
+    print()
+
+    if guess_name:
+        print(f"Number:    {number}")
+        if (answer := normalize(input("Name: "))) in name.lower():
+            print(f"\033[F\033[KName:   ✅ RIGHT ⮕  {name}")
+        else:
+            print(f"\033[F\033[KName:   ❌ WRONG ⮕> {name}")
+        return
+
+    if guess_number:
+        print(f"Name:      {name}")
+        if (answer := toint(input("Number:    "))) == number:
+            print(f"\033[F\033[KNumber:    ✅ RIGHT ⮕  {number} | {category}")
+        else:
+            print(f"\033[F\033[KNumber:    ❌ WRONG ⮕> {number} | {category}")
+
+def toint(value: str, fallback: int = 0) -> int:
+    try:
+        return int(value)
+    except ValueError:
+        return fallback
+
+def normalize(s: str) -> str:
+    s = s.strip()
+    return re.sub(r"\s+", " ", s.replace("<br />", " ").strip().strip("\"").strip("'").replace("\\'", "'").strip())
+
+
+if __name__ == "__main__":
+    main()
