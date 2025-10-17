@@ -58,10 +58,15 @@ def main():
             guess_name = True
             guess_number = False
         elif arg in ["--dump", "-dump"]:
+            longest_name = max(len(item["name"]) for item in data)
             for element in data:
                 name = element.get("name")
                 number = element.get("number")
-                print(f"{name}: {number}")
+                category = element.get("category")
+                print(f"{name + ':':<{longest_name + 1}} {number:<3} | {category}")
+        elif arg.startswith("-"):
+            if (max_number := toint(arg[2:] if arg.startswith("--") else arg[1:])) > 0:
+                data = data[:max_number]
 
     while True:
         display(select(), guess_number, guess_name)
