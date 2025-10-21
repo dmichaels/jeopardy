@@ -42,9 +42,11 @@ def main():
         while True:
             item = random.choice(choices)
             if not simple:
+                item["__refresh__"] = False
                 choices.remove(item) # ; print([element["number"] for element in choices])
                 if not choices:
                     choices = select.choices = data.copy()
+                    item["__refresh__"] = True
             number = item.get("number")
             if (number in recent_items) and (ntries < ntries_max):
                 ntries += 1
@@ -91,6 +93,7 @@ def display(item: dict, guess_number: bool, guess_name: bool) -> None:
     number   = item.get("number")
     symbol   = item.get("symbol")
     category = item.get("category")
+    refresh  = item.get("__refresh__")
 
     print()
 
@@ -103,7 +106,7 @@ def display(item: dict, guess_number: bool, guess_name: bool) -> None:
         return
 
     if guess_number:
-        print(f"Name:      {name}")
+        print(f"Name:      {name}{' ∆' if refresh else ''}")
         if (answer := toint(input("Number:    "))) == number:
             print(f"\033[F\033[KNumber:    ✅ RIGHT ⮕  {number} | {symbol} | {category}")
         else:
