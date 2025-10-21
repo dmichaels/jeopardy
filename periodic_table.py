@@ -13,7 +13,7 @@ data_file = os.path.join(script_dir, "periodic_table.json")
 
 def main():
 
-    recent_items_max = 14
+    recent_items_max = 20
     recent_items     = []
     data             = {}
 
@@ -75,6 +75,7 @@ def display(item: dict, guess_number: bool, guess_name: bool) -> None:
 
     name     = item.get("name")
     number   = item.get("number")
+    symbol   = item.get("symbol")
     category = item.get("category")
 
     print()
@@ -90,9 +91,9 @@ def display(item: dict, guess_number: bool, guess_name: bool) -> None:
     if guess_number:
         print(f"Name:      {name}")
         if (answer := toint(input("Number:    "))) == number:
-            print(f"\033[F\033[KNumber:    ✅ RIGHT ⮕  {number} | {category}")
+            print(f"\033[F\033[KNumber:    ✅ RIGHT ⮕  {number} | {symbol} | {category}")
         else:
-            print(f"\033[F\033[KNumber:    ❌ WRONG ⮕> {number} | {category}")
+            print(f"\033[F\033[KNumber:    ❌ WRONG ⮕> {number} | {symbol} | {category}")
 
 def toint(value: str, fallback: int = 0) -> int:
     try:
