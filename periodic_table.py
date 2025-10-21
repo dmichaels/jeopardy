@@ -26,14 +26,25 @@ def main():
             data.sort(key=lambda value: toint(value["number"]))
             return data
 
-    def select() -> dict:
+    def select(simple: bool = True) -> dict:
 
         nonlocal recent_items_max, recent_items, data
+
+        if not simple:
+            if not hasattr(select, "choices"):
+                select.choices = data.copy()
+            choices = select.choices
+        else:
+            choices = data
 
         ntries_max = 100
         ntries = 1
         while True:
-            item = random.choice(data)
+            item = random.choice(choices)
+            if not simple:
+                choices.remove(item) # ; print([element["number"] for element in choices])
+                if not choices:
+                    choices = select.choices = data.copy()
             number = item.get("number")
             if (number in recent_items) and (ntries < ntries_max):
                 ntries += 1
@@ -46,8 +57,9 @@ def main():
 
     data = load()
 
-    guess_number = True
-    guess_name   = False
+    simple_select = False
+    guess_number  = True
+    guess_name    = False
 
     for arg in sys.argv[1:]:
         arg = arg.lower()
@@ -57,6 +69,8 @@ def main():
         elif arg in ["--name", "-name"]:
             guess_name = True
             guess_number = False
+        elif arg in ["--simple", "-simple"]:
+            simple_select = True
         elif arg in ["--dump", "-dump"]:
             longest_name = max(len(item["name"]) for item in data)
             for element in data:
@@ -69,7 +83,7 @@ def main():
                 data = data[:max_number]
 
     while True:
-        display(select(), guess_number, guess_name)
+        display(select(simple_select), guess_number, guess_name)
 
 def display(item: dict, guess_number: bool, guess_name: bool) -> None:
 
