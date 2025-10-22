@@ -50,6 +50,8 @@ def main():
             number = item.get("number")
             if (number in recent_items) and (ntries < ntries_max):
                 ntries += 1
+                if not simple:
+                    choices.append(item)
                 continue
             recent_items.append(number)
             if len(recent_items) > recent_items_max:
