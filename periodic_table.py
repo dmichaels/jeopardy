@@ -36,7 +36,6 @@ def main():
             choices = select.choices
         else:
             choices = data
-        print([element["number"] for element in choices])
 
         ntries_max = 100
         ntries = 1
