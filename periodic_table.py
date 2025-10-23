@@ -42,11 +42,9 @@ def main():
         while True:
             item = random.choice(choices)
             if not simple:
-                item["__refresh__"] = False
                 choices.remove(item) # ; print([element["number"] for element in choices])
                 if not choices:
                     choices = select.choices = data.copy()
-                    item["__refresh__"] = True
             number = item.get("number")
             if (number in recent_items) and (ntries < ntries_max):
                 ntries += 1
@@ -56,6 +54,8 @@ def main():
             recent_items.append(number)
             if len(recent_items) > recent_items_max:
                 del recent_items[0]
+            if not simple:
+                item["__refresh__"] = (len(choices) == len(data) - 1)
             return item
 
 
@@ -64,6 +64,7 @@ def main():
     simple_select = False
     guess_number  = True
     guess_name    = False
+    dump          = False
 
     for arg in sys.argv[1:]:
         arg = arg.lower()
@@ -76,15 +77,20 @@ def main():
         elif arg in ["--simple", "-simple"]:
             simple_select = True
         elif arg in ["--dump", "-dump"]:
-            longest_name = max(len(item["name"]) for item in data)
-            for element in data:
-                name = element.get("name")
-                number = element.get("number")
-                category = element.get("category")
-                print(f"{name + ':':<{longest_name + 1}} {number:<3} | {category}")
+            dump = True
         elif arg.startswith("-"):
             if (max_number := toint(arg[2:] if arg.startswith("--") else arg[1:])) > 0:
                 data = data[:max_number]
+
+    if dump:
+        longest_name = max(len(item["name"]) for item in data)
+        for element in data:
+            name = element.get("name")
+            number = element.get("number")
+            symbol = element.get("symbol")
+            category = element.get("category")
+            print(f"{name + ':':<{longest_name + 1}} {number:<3} | {symbol:<2} | {category}")
+        return
 
     while True:
         display(select(simple_select), guess_number, guess_name)
