@@ -36,6 +36,7 @@ def main():
             choices = select.choices
         else:
             choices = data
+        print([element["number"] for element in choices])
 
         ntries_max = 100
         ntries = 1
@@ -61,10 +62,13 @@ def main():
 
     data = load()
 
+    max_number    = None
+    min_number    = None
     simple_select = False
+    dump          = False
+
     guess_number  = True
     guess_name    = False
-    dump          = False
 
     for arg in sys.argv[1:]:
         arg = arg.lower()
@@ -79,8 +83,29 @@ def main():
         elif arg in ["--dump", "-dump"]:
             dump = True
         elif arg.startswith("-"):
-            if (max_number := toint(arg[2:] if arg.startswith("--") else arg[1:])) > 0:
-                data = data[:max_number]
+            if (number := toint(arg[2:] if arg.startswith("--") else arg[1:])) > 0:
+                if not max_number:
+                    max_number = number
+                elif not min_number:
+                    min_number = number
+            else:
+                usage()
+
+    if max_number:
+        if max_number > len(data):
+            max_number = len(data)
+        if min_number:
+            if min_number < 1:
+                min_number = 1
+            if max_number < min_number:
+                min_number, max_number = max_number, min_number
+            data = data[min_number - 1:max_number]
+        else:
+            data = data[:max_number]
+    elif min_number:
+        if min_number < 1:
+            min_number = 1
+        data = data[min_number - 1:]
 
     if dump:
         longest_name = max(len(item["name"]) for item in data)
@@ -94,6 +119,10 @@ def main():
 
     while True:
         display(select(simple_select), guess_number, guess_name)
+
+def usage():
+    print("usage: python periodic_table.py [--name] [--number] [--min] [--max] [--simple] [--dump] ")
+    exit(1)
 
 def display(item: dict, guess_number: bool, guess_name: bool) -> None:
 
