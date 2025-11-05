@@ -106,6 +106,8 @@ def main():
             min_number = 1
         data = data[min_number - 1:]
 
+    recent_items_max = round(len(data) / 2)
+
     if dump:
         longest_name = max(len(item["name"]) for item in data)
         for element in data:
