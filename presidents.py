@@ -184,7 +184,7 @@ def toparty(value: str) -> str:
         return "F"
     elif value == "Democratic-Republican":
         return "D-R"
-    elif value == "National-Republican":
+    elif value == "National Republican":
         return "N-R"
     elif value == "Democratic (Union)":
         return "D-U"
