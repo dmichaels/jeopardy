@@ -10,7 +10,7 @@ data_file = os.path.join(script_dir, "presidents.json")
 
 def main():
 
-    recent_items_max = 14
+    recent_items_max = 20
     recent_items     = []
     data             = {}
 
@@ -125,6 +125,7 @@ def display(item: dict, guess_year: bool, guess_number: bool, guess_state: bool,
     party   = item.get("party", "")
     home    = item.get("home", "")
     state   = home.split(",")[1].strip()
+    party   = toparty(item.get("party"))
     nct     = item.get("nct") or 0
     refresh = item.get("__refresh__")
 
@@ -147,9 +148,9 @@ def display(item: dict, guess_year: bool, guess_number: bool, guess_state: bool,
         return
 
     if nct > 0:
-        print(f"President: {name} [Term: {nct}]{' ∆' if refresh else ''}")
+        print(f"President: {name} [Term: {nct}]{' ∆' if refresh else ''} ({party})")
     else:
-        print(f"President: {name}{' ∆' if refresh else ''}")
+        print(f"President: {name}{' ∆' if refresh else ''} ({party})")
 
     if guess_year:
         if (answer := toint(input("Year:      "))) == year:
@@ -174,6 +175,24 @@ def todate(value: str, fallback: datetime.date = datetime.date.min) -> datetime.
         return datetime.datetime.strptime(value, "%Y-%m-%d").date()
     except Exception as e:
         return fallback
+
+def toparty(value: str) -> str:
+    if value == "Democratic":
+        return "D"
+    elif value == "Republican":
+        return "R"
+    elif value == "Federalist":
+        return "F"
+    elif value == "Democratic-Republican":
+        return "D-R"
+    elif value == "National-Republican":
+        return "N-R"
+    elif value == "Democratic (Union)":
+        return "D-U"
+    elif value == "Whig":
+        return "W"
+    else:
+        return value
 
 def normalize(s: str) -> str:
     s = s.strip()
