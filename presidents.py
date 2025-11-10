@@ -122,10 +122,9 @@ def display(item: dict, guess_year: bool, guess_number: bool, guess_state: bool,
     name    = item.get("name", "")
     number  = item.get("number")
     year    = todate(item.get("from")).year
-    party   = item.get("party", "")
+    party   = toparty(item.get("party"))
     home    = item.get("home", "")
     state   = home.split(",")[1].strip()
-    party   = toparty(item.get("party"))
     nct     = item.get("nct") or 0
     refresh = item.get("__refresh__")
 
@@ -148,9 +147,9 @@ def display(item: dict, guess_year: bool, guess_number: bool, guess_state: bool,
         return
 
     if nct > 0:
-        print(f"President: {name} [Term: {nct}]{' ∆' if refresh else ''} ({party})")
+        print(f"President: {name} ({party}) [Term: {nct}]{' ∆' if refresh else ''}")
     else:
-        print(f"President: {name}{' ∆' if refresh else ''} ({party})")
+        print(f"President: {name} ({party}){' ∆' if refresh else ''}")
 
     if guess_year:
         if (answer := toint(input("Year:      "))) == year:
