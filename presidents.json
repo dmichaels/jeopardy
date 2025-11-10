@@ -30,7 +30,7 @@
   { "name": "Warren G. Harding",      "from": "1921-03-04", "party": "Republican", "vice": ["Calvin Coolidge"], "home": "Blooming Grove, OH", "birth": "1865-11-02" },
   { "name": "Calvin Coolidge",        "from": "1923-08-02", "party": "Republican", "vice": ["", "Charles G. Dawes"], "home": "Plymouth, VT", "birth": "1872-07-04" },
   { "name": "Herbert Hoover",         "from": "1929-03-04", "party": "Republican", "vice": ["Charles Curtis"], "home": "West Branch, IA", "birth": "1874-08-10" },
-  { "name": "Franklin D. Roosevelt",  "from": "1933-03-04", "vice": ["John N. Garner", "Henry A. Wallace", "Harry S. Truman"], "home": "Hyde Park, NY", "birth": "1882-01-30" },
+  { "name": "Franklin D. Roosevelt",  "from": "1933-03-04", "party": "Democratic", "vice": ["John N. Garner", "Henry A. Wallace", "Harry S. Truman"], "home": "Hyde Park, NY", "birth": "1882-01-30" },
   { "name": "Harry S. Truman",        "from": "1945-04-12", "party": "Democratic", "vice": ["-", "Alben W. Barkley"], "home": "Lamar, MO", "birth": "1884-05-08" },
   { "name": "Dwight D. Eisenhower",   "from": "1953-01-20", "party": "Republican", "vice": ["Richard M. Nixon"], "home": "Dennison, TX", "birth": "1890-10-14" },
   { "name": "John F. Kennedy",        "from": "1961-01-20", "party": "Democratic", "vice": ["Lyndon B. Johnson"], "home": "Brookline, MA", "birth": "1917-05-29" },
