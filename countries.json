@@ -228,13 +228,13 @@
     "is_small_island": true
   },
   {
-    "country": "Congo, Democratic Republic of the",
+    "country": "Democratic Republic of the Congo",
     "capital": "Kinshasa",
     "region": "Africa",
     "is_small_island": false
   },
   {
-    "country": "Congo, Republic of the",
+    "country": "Republic of the Congo",
     "capital": "Brazzaville",
     "region": "Africa",
     "is_small_island": false
@@ -1094,7 +1094,6 @@
   {
     "country": "Ukraine",
     "capital": "Kiev",
-    "capital_previous": "Kyiv",
     "region": "Europe",
     "is_small_island": false
   },
