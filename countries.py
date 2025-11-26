@@ -18,6 +18,7 @@ def main():
             for number, item in enumerate(data, start=1):
                 item["number"] = number
                 item["capital_normalized"] = normalize_name(item["capital"])
+                print(item["capital_normalized"])
             return data
 
     def select(data: dict) -> dict:
@@ -65,7 +66,7 @@ def main():
             print(f"\033[F\033[KCapital: ❌ WRONG ⮕> {capital}")
 
 def normalize_name(s: str) -> str:
-    return remove_accents(normalize(s).replace(".", "").replace(",", "")).replace("-", " ").lower()
+    return remove_accents(normalize(s).replace(".", "").replace(",", "")).replace("-", " ").replace("'", "").lower()
 
 def normalize(s: str) -> str:
     return re.sub(r"\s+", " ", s.strip().replace("<br />", " ").strip().strip("\"").strip("'").replace("\\'", "'").strip())
