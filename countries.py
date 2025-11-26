@@ -60,20 +60,12 @@ def main():
         refresh = item.get("__refresh__")
         print(f"\nCountry: {country}{' ∆' if refresh else ''}")
         if (answer := normalize(input("Capital: ")).lower()) == capital_normalized:
-            print()
-            print(answer)
-            print(capital_normalized)
-            print()
             print(f"\033[F\033[KCapital: ✅ RIGHT ⮕  {capital}")
         else:
-            print()
-            print(answer)
-            print(capital_normalized)
-            print()
             print(f"\033[F\033[KCapital: ❌ WRONG ⮕> {capital}")
 
 def normalize_name(s: str) -> str:
-    return remove_accents(normalize(s).replace(".", "").replace(",", "")).lower()
+    return remove_accents(normalize(s).replace(".", "").replace(",", "")).replace("-", " ").lower()
 
 def normalize(s: str) -> str:
     return re.sub(r"\s+", " ", s.strip().replace("<br />", " ").strip().strip("\"").strip("'").replace("\\'", "'").strip())
