@@ -366,6 +366,12 @@
     "is_small_island": false
   },
   {
+    "country": "French Guiana",
+    "capital": "Cayenne",
+    "region": "South America",
+    "is_small_island": false
+  },
+  {
     "country": "Gabon",
     "capital": "Libreville",
     "region": "Africa",
