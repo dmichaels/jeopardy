@@ -108,6 +108,12 @@
     "is_small_island": false
   },
   {
+    "country": "Bermuda",
+    "capital": "Hamilton",
+    "region": "North America",
+    "is_small_island": true
+  },
+  {
     "country": "Benin",
     "capital": "Porto-Novo",
     "region": "Africa",
