@@ -28,14 +28,16 @@ def main():
     def select(data: dict) -> dict:
 
         recent_item_max = 20
-        recent_item_numbers = []
 
-        if not hasattr(select, "recent_item_numbers"):
-            select.recent_item_numbers = []
-        data_local_name = f"data_{id(data)}"
-        if not hasattr(select, data_local_name):
-            setattr(select, data_local_name, data_local := data.copy())
-        data_local = getattr(select, data_local_name)
+        recent_item_numbers_variable_name = f"recent_item_numbers{id(data)}"
+        if not hasattr(select, recent_item_numbers_variable_name):
+            setattr(select, recent_item_numbers_variable_name, [])
+        recent_item_numbers = getattr(select, recent_item_numbers_variable_name)
+
+        data_local_variable_name = f"data_{id(data)}"
+        if not hasattr(select, data_local_variable_name):
+            setattr(select, data_local_variable_name, data_local := data.copy())
+        data_local = getattr(select, data_local_variable_name)
 
         ntries_max = 100
         ntries = 1
@@ -43,7 +45,7 @@ def main():
             item = random.choice(data_local)
             data_local.remove(item)
             if not data_local:
-                setattr(select, data_local_name, data_local := data.copy())
+                setattr(select, data_local_variable_name, data_local := data.copy())
             number = item.get("number")
             if (number in recent_item_numbers) and (ntries < ntries_max):
                 ntries += 1
