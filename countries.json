@@ -540,6 +540,12 @@
     "is_small_island": false
   },
   {
+    "country": "Kosovo",
+    "capital": "Pristina",
+    "region": "Europe",
+    "is_small_island": false
+  },
+  {
     "country": "Kiribati",
     "capital": "South Tarawa",
     "region": "Oceania",
