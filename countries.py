@@ -14,7 +14,7 @@ def main():
     def load(capitals: bool = False, include_islands: bool = True, include_non_islands: bool = True) -> dict:
         with open(data_file, "r") as f:
             data = json.load(f)
-            data.sort(key=lambda value: value["capital"] if capitals else value["country"], reverse=False)
+            data.sort(key=lambda value: value["capital"], reverse=False)
             if not include_islands:
                 data = [item for item in data if not item["is_small_island"]]
             if not include_non_islands:
@@ -97,13 +97,13 @@ def main():
         refresh = item.get("__refresh__")
         if option_capitals:
             print(f"\nCapital: {capital}{' ∆' if refresh else ''}")
-            if (answer := normalize(input("Country: ")).lower()) == country_normalized:
+            if (answer := normalize_name(input("Country: ")).lower()) == country_normalized:
                 print(f"\033[F\033[KCountry: ✅ RIGHT ⮕  {country}")
             else:
                 print(f"\033[F\033[KCountry: ❌ WRONG ⮕> {country}")
         else:
             print(f"\nCountry: {country}{' ∆' if refresh else ''}")
-            if (answer := normalize(input("Capital: ")).lower()) == capital_normalized:
+            if (answer := normalize_name(input("Capital: ")).lower()) == capital_normalized:
                 print(f"\033[F\033[KCapital: ✅ RIGHT ⮕  {capital}")
             else:
                 print(f"\033[F\033[KCapital: ❌ WRONG ⮕> {capital}")
